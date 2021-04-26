@@ -1,0 +1,24 @@
+{
+  "name": "hertz",
+  "version": "1.0.0",
+  "description": "A Discord Bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Irmai/Hertz.git"
+  },
+  "keywords": [
+    "bot",
+    "discord",
+    "al"
+  ],
+  "author": "Alejandro Motta Cano",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Irmai/Hertz/issues"
+  },
+  "homepage": "https://github.com/Irmai/Hertz#readme"
+}
