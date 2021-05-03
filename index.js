@@ -5,9 +5,10 @@
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 const Discord = require('discord.js');
 const ytdl = require("ytdl-core");
+
+
 const config = require("./config.json");
-
-
+const emotes = require("./resources/emotes.json");
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //
 //      [RESSOURCES]
@@ -46,8 +47,11 @@ client.on('message', async message => {
     console.log("------------------------------------------------------------------------------------")
     console.log("----------------------------MESSAGE RECEIVED----------------------------------------")
     console.log("------------------------------------------------------------------------------------")
+    if(message.author.bot){
+        return console.log("a bot is talking");
+    }
     if(!message.author.bot){
-        return console.log(`${message.content} from ${message.author.username}/n`);
+        console.log(`${message.content} from ${message.author.username}/n`);
     }
     console.log(`Message sended by ${message.author.username}`);
     if(!message.content.startsWith(config.prefix)){
@@ -78,10 +82,6 @@ client.on('message', async message => {
         case '&emote':
             console.log('[INF] [emote] detected');
             emote(message, serverQueue);
-            break;
-        case '&emote2':
-            console.log('[INF] [emote2] detected');
-            emote_v2(message, serverQueue);
             break;
         default:
             console.log("[INF] nani ?");
@@ -210,8 +210,101 @@ function stop(message, serverQueue) {
     }
     if(!serverQueue) {
         console.log("[ERR] serverQueue not found");
-        return message.channel.send("Y'a pas de son!..LOuh!");
+        return message.channel.send("Y'a pas de son!..Ouh!");
     }
     serverQueue.songs = [];
     serverQueue.connection.dispatcher.end();
+}
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//
+//      [EMOTES]
+//
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+async function emote(message, serverQueue){
+    args = message.content.split(" ");
+    console.log("Checking Arguments");
+    if(!args[1]){
+        console.log("args[1] missing");
+        return message.channel.send("Y'a pas de son!..Ouh!");
+    }
+    console.log(`${args[1]} founded`);
+    const voiceChannel = message.member.voice.channel;
+    console.log("Checking Voice Channel");
+    if(!voiceChannel){
+        console.log('[ERR] voiceChannel is missing');
+        return message.channel.send("T'es pas connecté.. Ouh!");
+    }
+    console.log("Voice Channel Detected");
+
+    console.log("Checking for permissions");
+    const permissions = voiceChannel.permissionsFor(message.client.user);
+    if(!permissions){
+        console.log('[ERR] permissions is missing');
+        return message.channel.send("Je suis faible...Ouh!");
+    }
+    console.log("Permissions validated");
+
+    console.log("Recovering the emote");
+    const emoteArgument = args[1].split("-");
+    const emoteIndex = emoteArgument[0];
+    const emoteName = emoteArgument[1];
+    const inf = emotes.inf.find( element => element.name == emoteName);
+    // console.log(`${inf.name}`);
+    // console.log(`${inf.id}`);
+    // console.log(`${inf.url[01]}`);
+    if(!inf){
+        console.log("Unknow category");
+        return message.channel.send("Pas la bonne catégorie ça !");
+    }
+    console.log(`${emoteIndex}`);
+    const emoteUrl = inf.url[emoteIndex - 1];
+    console.log(`${emoteUrl}`);
+    if(!emoteUrl){
+        console.log("emote unknowed");
+        return message.channel.send("Pas la bonne émote ça !");
+    }
+
+    const emoteInfo = await ytdl.getInfo(emoteUrl);
+    const emote = {
+        title: emoteInfo.videoDetails.title,
+        url: emoteInfo.videoDetails.video_url
+    }
+
+    if(!serverQueue) {
+        const queueConstruct = {
+            textChannel: message.channel,
+            voiceChannel: voiceChannel,
+            connection: null,
+            songs: [],
+            volume: 1,
+            playing: true
+        };
+
+        queue.set(message.guild.id, queueConstruct);
+        queueConstruct.songs.push(emote);
+
+        try {
+            var connection = await voiceChannel.join();
+            queueConstruct.connection = connection;
+            play(message.guild, queueConstruct.songs[0]);
+        } catch(err) {
+            console.log(`[ERR] ${err}`);
+            queue.delete(message.guild.id);
+            return message.channel.send("J'ai rencontré une petite erreur..Ouh...!");
+        }
+    } else {
+        serverQueue.songs.splice(1,0,emote);
+        console.log("[INF] emote added to server queue");
+        console.log("-------------------------------------");
+        serverQueue.songs.forEach(element => {
+            console.log(element.title);
+        })
+        console.log("-------------------------------------");
+        console.log(`${serverQueue.songs[0].title}`);
+        serverQueue.connection.dispatcher.end();
+        return message.channel.send(`${emote.title} a été ajouté à la liste!..Ouh!`);
+    }
+
 }
