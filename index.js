@@ -97,6 +97,15 @@ client.login(config.token);
 //
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+//-------------------------------------------------|
+//        [Init for musique ]                      |
+//Checks Permissions                               |
+//Summon Bot                                       |
+//Check if the queu for the guild id exist         | 
+//if not create the queue                          |
+//push the musique to the queue                    |
+//and call play function                           |
+//-------------------------------------------------|
 
 async function execute(message, song_url, serverQueue){
     const voiceChannel = message.member.voice.channel;
@@ -325,6 +334,12 @@ async function emote_v2(message, serverQueue){
         return message.channel.send(`${emote.title} a été ajouté à la liste!..Ouh!`);
     }
 }
+
+//-------------------------------------------------|
+//        [play for musique ]                      |
+//Checks if songs exist                            |
+//use the connection to play the musique           |
+//-------------------------------------------------|
 
 function play(guild, song){
     const serverQueue = queue.get(guild.id);
