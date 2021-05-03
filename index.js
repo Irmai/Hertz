@@ -46,8 +46,8 @@ client.on('message', async message => {
     console.log("------------------------------------------------------------------------------------")
     console.log("----------------------------MESSAGE RECEIVED----------------------------------------")
     console.log("------------------------------------------------------------------------------------")
-    if(message.author.bot && message.author.username != 'Hertz'){
-        return console.log(`${message.content} from ${message.author.username}`);
+    if(!message.author.bot){
+        return console.log(`${message.content} from ${message.author.username}/n`);
     }
     console.log(`Message sended by ${message.author.username}`);
     if(!message.content.startsWith(config.prefix)){
