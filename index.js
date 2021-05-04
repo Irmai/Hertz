@@ -235,6 +235,16 @@ function stop(message, serverQueue) {
 //
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+//-------------------------------------------------|
+//        [init for emotes  ]                      |
+//Checks Permissions                               |
+//Summon Bot                                       |
+//Check if the queu for the guild id exist         | 
+//if not create the queue                          |
+//push the emotes to the start of the  queue       |
+//and call play function                           |
+//-------------------------------------------------|
+
 async function emote(message, serverQueue){
     args = message.content.split(" ");
     console.log("Checking Arguments");
