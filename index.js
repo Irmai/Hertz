@@ -186,6 +186,12 @@ function play(guild, song){
     serverQueue.textChannel.send(`Démarrage de la musique!..Ouh *-*${song.title}*-*`);
 }
 
+//-------------------------------------------------|
+//        [skip for musique ]                      |
+//Checks if user is in voice channel               |
+//skip the actual song by ending the dispatcher    |
+//-------------------------------------------------|
+
 function skip(message, serverQueue) {
     if(!message.member.voice.channel){
         console.log("[ERR] voiceChannel not found");
@@ -202,6 +208,13 @@ function skip(message, serverQueue) {
     console.log("[INF] music skipped");
     serverQueue.connection.dispatcher.end();
 }
+
+//-------------------------------------------------|
+//        [stop for musique ]                      |
+//Checks if user is in voice channel               |
+//stop the actual song by ending the dispatcher    |
+//and cleaning the serverQueue.songs               |  
+//-------------------------------------------------|
 
 function stop(message, serverQueue) {
     if(!message.member.voice.channel) {
@@ -221,6 +234,16 @@ function stop(message, serverQueue) {
 //      [EMOTES]
 //
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+//-------------------------------------------------|
+//        [init for emotes  ]                      |
+//Checks Permissions                               |
+//Summon Bot                                       |
+//Check if the queu for the guild id exist         | 
+//if not create the queue                          |
+//push the emotes to the start of the  queue       |
+//and call play function                           |
+//-------------------------------------------------|
 
 async function emote(message, serverQueue){
     args = message.content.split(" ");
