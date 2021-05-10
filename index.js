@@ -83,6 +83,9 @@ client.on('message', async message => {
             console.log('[INF] [emote] detected');
             emote(message, serverQueue);
             break;
+        case '&emotehelp':
+            console.log("au secours");
+            emoteList(message);
         default:
             console.log("[INF] nani ?");
             break;
@@ -321,13 +324,33 @@ async function emote(message, serverQueue){
         serverQueue.songs.splice(1,0,emote);
         console.log("[INF] emote added to server queue");
         console.log("-------------------------------------");
-        serverQueue.songs.forEach(element => {
-            console.log(element.title);
+        serverQueue.songs.map( element => {
+            console.log(element);
         })
         console.log("-------------------------------------");
         console.log(`${serverQueue.songs[0].title}`);
         serverQueue.connection.dispatcher.end();
         return message.channel.send(`${emote.title} a été ajouté à la liste!..Ouh!`);
     }
+}
 
+function emoteList(message){
+    var answer = "```\n";
+    answer = answer + "Voici la liste des émotes disponibles sur le serveur ! \n";
+    answer = answer + "Un exemple d'une commande émote => &emote 6-gen\n";
+    emotes.inf.map(element => {
+        const name = element.name;
+        const id = {};
+        console.log(element.name);
+        answer = answer + "\n" + "[" + element.name + "]" + "\n";
+        answer = answer + "---------------------------------"
+        element.id.map(element => {
+            console.log("=> " + parseInt(element) + " " + name);
+            answer = answer + "\n" + parseInt(element) + name;
+        })
+        answer = answer + "\n---------------------------------"
+    })
+    answer = answer + "```\n";
+    console.log(answer);
+    return message.channel.send(answer);
 }
