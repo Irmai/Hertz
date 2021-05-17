@@ -64,8 +64,16 @@ client.on('message', async message => {
 
     switch(args[0]){
         case '&hello':
-            console.log("Hello function required");
-            mind.hello(message);
+            const checkingRoles = checkPermission(message);
+            if(checkingRoles == 1)
+            {
+                console.log("Hello function required");
+                message.send("Hello :D");
+            } else {
+                console.log("------------------------------------------------------------------------------------");
+                console.log("warning : role not found");
+                console.log("------------------------------------------------------------------------------------");
+            }
             break;
         case '&play':
             console.log("Play function required");
@@ -85,7 +93,9 @@ client.on('message', async message => {
             break;
         case '&emotehelp':
             console.log("au secours");
-            emoteList(message);
+            message.send("En cours de construction, trop d'émotes... Al");
+            break;
+            //emoteList(message);
         default:
             console.log("[INF] nani ?");
             break;
@@ -336,21 +346,45 @@ async function emote(message, serverQueue){
 
 function emoteList(message){
     var answer = "```\n";
-    answer = answer + "Voici la liste des émotes disponibles sur le serveur ! \n";
-    answer = answer + "Un exemple d'une commande émote => &emote 6-gen\n";
+    var timer_1 = 1;
     emotes.inf.map(element => {
         const name = element.name;
         const id = {};
         console.log(element.name);
         answer = answer + "\n" + "[" + element.name + "]" + "\n";
-        answer = answer + "---------------------------------"
+        answer = answer + "---------------------------------\n"
         element.id.map(element => {
-            console.log("=> " + parseInt(element) + " " + name);
-            answer = answer + "\n" + parseInt(element) + name;
+            if(timer_1 < 4){
+                console.log("=> " + parseInt(element) + " " + name);
+                answer = answer + " | " + parseInt(element) + name;
+                timer_1 = timer_1 +1;
+            } else {
+                console.log("=> " + parseInt(element) + " " + name);
+                answer = answer + " | " + parseInt(element) + name + " | " + "\n";
+                timer_1 = 1;
+            }
+            // console.log("=> " + parseInt(element) + " " + name);
+            // answer = answer + "\n" + parseInt(element) + name;
         })
         answer = answer + "\n---------------------------------"
     })
     answer = answer + "```\n";
     console.log(answer);
     return message.channel.send(answer);
+}
+
+function checkPermission(message){
+    const roles = message.member.roles.cache;
+    // roles.map(element => {
+    //     if(element.)
+    // })
+    
+    console.log(roles);
+    if(roles.has("Hertz Supporter")){
+        console.log("Role Found");
+        return 1;
+    }else {
+        console.log("Role not Found");
+        return 2;
+    }
 }
